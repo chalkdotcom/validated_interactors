@@ -28,7 +28,7 @@ module ValidatedInteractors
     end
 
     def fail!(args = {})
-      raise ArgumentError, "fail! only excepts no or hash arguments" unless args.is_a? Hash
+      raise ArgumentError, "fail! only accepts no or hash arguments" unless args.is_a? Hash
 
       @succeeded = false
 
