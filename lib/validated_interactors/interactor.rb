@@ -3,26 +3,20 @@ module ValidatedInteractors
     def self.included(klass)
       klass.class_eval do
         include ActiveModel::Validations
-      end
-    end
 
-    def process
-      tap do
-        if valid?
-          @succeeded = true
-          perform
-        else
-          fail!
+        def self.call(*args)
+          new(*args).call
         end
       end
     end
 
-    def process!
+    def call
       tap do
-        process
-
-        if failure?
-          raise ValidatedInteractors::Failure, self
+        if valid?
+          @succeeded = true
+          action
+        else
+          fail!
         end
       end
     end

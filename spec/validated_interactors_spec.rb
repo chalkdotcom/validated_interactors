@@ -4,54 +4,55 @@ describe ValidatedInteractors::Interactor do
   let(:interactor) do
     Class.new do
       include ValidatedInteractors::Interactor
-      def perform; end
+      def initialize(args = nil); end
+      def action; end
     end
   end
 
-  describe ".process" do
+  describe "#call" do
+    it "calls new with the arguments passed in" do
+      args = "HELLO"
+      interactor_object = interactor.new
+      interactor.should_receive(:new).with(args) { interactor_object }
+
+      interactor.call(args)
+    end
+
+    it "calls .call on a new object" do
+      args = "HELLO"
+      interactor.any_instance.should_receive(:call)
+
+      interactor.call(args)
+    end
+  end
+
+  describe ".call" do
     let(:interactor_object) { interactor.new }
-    subject(:process) { interactor_object.process }
+    subject(:call) { interactor_object.call }
 
     it { should be_instance_of interactor }
-    it { interactor.any_instance.should_receive(:valid?); process }
+    it { interactor.any_instance.should_receive(:valid?); call }
     it "calls perform if valid returns true" do
       interactor.any_instance.stub(:valid?).and_return(true)
-      interactor_object.should_receive(:perform)
+      interactor_object.should_receive(:action)
 
-      process
+      call
     end
     it "calls fail! if valid returns false" do
       interactor.any_instance.stub(:valid?).and_return(false)
       interactor_object.should_receive(:fail!)
 
-      process
+      call
     end
     it "succeeds if valid returns true by default" do
       interactor.any_instance.stub(:valid?).and_return(true)
-      process
+      call
       expect(interactor_object.success?).to eq(true)
     end
     it "fails if valid returns false" do
       interactor.any_instance.stub(:valid?).and_return(false)
-      process
+      call
       expect(interactor_object.success?).to eq(false)
-    end
-  end
-
-  describe ".process!" do
-    let(:interactor_object) { interactor.new }
-    subject(:process) { interactor_object.process! }
-
-    it { should be_instance_of interactor }
-    it "calls perform if valid returns true" do
-      interactor.any_instance.stub(:valid?).and_return(true)
-      interactor_object.should_receive(:perform)
-
-      process
-    end
-    it "it throws an exception if it failed" do
-      interactor.any_instance.stub(:valid?).and_return(false)
-      expect { process }.to raise_error(ValidatedInteractors::Failure)
     end
   end
 
