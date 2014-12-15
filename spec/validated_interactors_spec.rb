@@ -38,6 +38,23 @@ describe ValidatedInteractors::Interactor do
     end
   end
 
+  describe ".process!" do
+    let(:interactor_object) { interactor.new }
+    subject(:process) { interactor_object.process! }
+
+    it { should be_instance_of interactor }
+    it "calls perform if valid returns true" do
+      interactor.any_instance.stub(:valid?).and_return(true)
+      interactor_object.should_receive(:perform)
+
+      process
+    end
+    it "it throws an exception if it failed" do
+      interactor.any_instance.stub(:valid?).and_return(false)
+      expect { process }.to raise_error(ValidatedInteractors::Failure)
+    end
+  end
+
   describe ".success?" do
     let(:interactor_object) { interactor.new }
 

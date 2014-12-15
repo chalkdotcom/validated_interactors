@@ -17,6 +17,16 @@ module ValidatedInteractors
       end
     end
 
+    def process!
+      tap do
+        process
+
+        if failure?
+          raise ValidatedInteractors::Failure, self
+        end
+      end
+    end
+
     def success?
       raise ValidatedInteractors::ProcessNotCalled, "I think you forgot to call process!" if @succeeded.nil?
 
