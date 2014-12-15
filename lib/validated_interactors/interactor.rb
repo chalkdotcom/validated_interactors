@@ -32,7 +32,7 @@ module ValidatedInteractors
     end
 
     def fail!(args = {})
-      raise ArgumentError, "fail! only accepts no or hash arguments" unless args.is_a? Hash
+      raise ArgumentError, "fail! only accepts no or hash arguments" unless args.is_a? Hash or args.is_a? ActiveModel::Errors
 
       @succeeded = false
 

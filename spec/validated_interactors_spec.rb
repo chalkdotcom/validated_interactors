@@ -109,6 +109,13 @@ describe ValidatedInteractors::Interactor do
       expect(interactor_object.errors.get(:message)).to eq(["UH OH"])
     end
 
+    it "adds any errors into errors" do
+      errors = ActiveModel::Errors.new(interactor_object)
+      errors[:message] = "UH OH"
+      interactor_object.fail! errors
+      expect(interactor_object.errors.get(:message)).to eq(["UH OH"])
+    end
+
     it "throws an exception if any arguments are not hashes" do
       expect { interactor_object.fail! "TEST" }.to raise_error(ArgumentError)
     end
