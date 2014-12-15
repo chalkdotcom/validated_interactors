@@ -17,14 +17,14 @@ module ValidatedInteractors
       end
     end
 
-    def succeeded?
+    def success?
       raise ValidatedInteractors::ProcessNotCalled, "I think you forgot to call process!" if @succeeded.nil?
 
       @succeeded
     end
 
-    def failed?
-      !succeeded?
+    def failure?
+      !success?
     end
 
     def fail!(args = {})

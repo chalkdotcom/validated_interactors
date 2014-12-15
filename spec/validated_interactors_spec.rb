@@ -29,52 +29,52 @@ describe ValidatedInteractors::Interactor do
     it "succeeds if valid returns true by default" do
       interactor.any_instance.stub(:valid?).and_return(true)
       process
-      expect(interactor_object.succeeded?).to eq(true)
+      expect(interactor_object.success?).to eq(true)
     end
     it "fails if valid returns false" do
       interactor.any_instance.stub(:valid?).and_return(false)
       process
-      expect(interactor_object.succeeded?).to eq(false)
+      expect(interactor_object.success?).to eq(false)
     end
   end
 
-  describe ".succeeded?" do
+  describe ".success?" do
     let(:interactor_object) { interactor.new }
 
     it "throws an exception by default" do
-      expect { interactor_object.succeeded? }.to raise_error(ValidatedInteractors::ProcessNotCalled)
+      expect { interactor_object.success? }.to raise_error(ValidatedInteractors::ProcessNotCalled)
     end
 
     it "returns true if it succeeded" do
       interactor_object.instance_variable_set(:@succeeded, true)
 
-      expect(interactor_object.succeeded?).to eq(true)
+      expect(interactor_object.success?).to eq(true)
     end
 
     it "returns false if it failed" do
       interactor_object.instance_variable_set(:@succeeded, false)
 
-      expect(interactor_object.succeeded?).to eq(false)
+      expect(interactor_object.success?).to eq(false)
     end
   end
 
-  describe ".failed?" do
+  describe ".failure?" do
     let(:interactor_object) { interactor.new }
 
     it "throws an exception by default" do
-      expect { interactor_object.succeeded? }.to raise_error(ValidatedInteractors::ProcessNotCalled)
+      expect { interactor_object.success? }.to raise_error(ValidatedInteractors::ProcessNotCalled)
     end
 
     it "returns false if it succeeded" do
       interactor_object.instance_variable_set(:@succeeded, true)
 
-      expect(interactor_object.failed?).to eq(false)
+      expect(interactor_object.failure?).to eq(false)
     end
 
     it "returns true if it failed" do
       interactor_object.instance_variable_set(:@succeeded, false)
 
-      expect(interactor_object.failed?).to eq(true)
+      expect(interactor_object.failure?).to eq(true)
     end
   end
 
@@ -83,7 +83,7 @@ describe ValidatedInteractors::Interactor do
 
     it "fails the object" do
       interactor_object.fail!
-      expect(interactor_object.succeeded?).to eq(false)
+      expect(interactor_object.success?).to eq(false)
     end
 
     it "adds any hash into errors" do
