@@ -19,6 +19,8 @@ module ValidatedInteractors
           fail!
         end
       end
+    rescue ValidatedInteractors::Failure => e
+      return self
     end
 
     def success?
@@ -39,6 +41,8 @@ module ValidatedInteractors
       args.each do |key, value|
         errors[key] = value
       end
+
+      raise ValidatedInteractors::Failure
     end
   end
 end

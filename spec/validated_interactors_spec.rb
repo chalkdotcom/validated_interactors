@@ -99,20 +99,36 @@ describe ValidatedInteractors::Interactor do
   describe ".fail!" do
     subject(:interactor_object) { interactor.new }
 
+    it "throws an exception" do
+      expect { interactor_object.fail! }.to raise_error(ValidatedInteractors::Failure)
+    end
+
     it "fails the object" do
-      interactor_object.fail!
+      begin
+        interactor_object.fail!
+      rescue ValidatedInteractors::Failure => e
+      end
+
       expect(interactor_object.success?).to eq(false)
     end
 
     it "adds any hash into errors" do
-      interactor_object.fail! message: "UH OH"
+      begin
+        interactor_object.fail! message: "UH OH"
+      rescue ValidatedInteractors::Failure => e
+      end
+
       expect(interactor_object.errors.get(:message)).to eq(["UH OH"])
     end
 
     it "adds any errors into errors" do
       errors = ActiveModel::Errors.new(interactor_object)
       errors[:message] = "UH OH"
-      interactor_object.fail! errors
+      begin
+        interactor_object.fail! errors
+      rescue ValidatedInteractors::Failure => e
+      end
+
       expect(interactor_object.errors.get(:message)).to eq(["UH OH"])
     end
 
