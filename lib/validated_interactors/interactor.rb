@@ -7,10 +7,14 @@ module ValidatedInteractors
         def self.call(*args)
           new(*args).call
         end
+
+        def self.call!(*args)
+          new(*args).call!
+        end
       end
     end
 
-    def call
+    def call!
       tap do
         if valid?
           @succeeded = true
@@ -19,6 +23,10 @@ module ValidatedInteractors
           fail!
         end
       end
+    end
+
+    def call
+      call!
     rescue ValidatedInteractors::Failure => e
       return self
     end
@@ -42,7 +50,7 @@ module ValidatedInteractors
         errors[key] = value
       end
 
-      raise ValidatedInteractors::Failure
+      raise ValidatedInteractors::Failure, self
     end
   end
 end

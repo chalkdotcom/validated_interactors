@@ -26,6 +26,52 @@ describe ValidatedInteractors::Interactor do
     end
   end
 
+  describe "#call!" do
+    it "calls new with the arguments passed in" do
+      args = "HELLO"
+      interactor_object = interactor.new
+      interactor.should_receive(:new).with(args) { interactor_object }
+
+      interactor.call!(args)
+    end
+
+    it "calls .call on a new object" do
+      args = "HELLO"
+      interactor.any_instance.should_receive(:call!)
+
+      interactor.call!(args)
+    end
+  end
+
+  describe ".call!" do
+    let(:interactor_object) { interactor.new }
+    subject(:call!) { interactor_object.call! }
+
+    it { should be_instance_of interactor }
+    it { interactor.any_instance.should_receive(:valid?).and_return(true); call! }
+    it "calls perform if valid returns true" do
+      interactor.any_instance.stub(:valid?).and_return(true)
+      interactor_object.should_receive(:action)
+
+      call!
+    end
+    it "calls fail! if valid returns false" do
+      interactor.any_instance.stub(:valid?).and_return(false)
+      interactor_object.should_receive(:fail!)
+
+      call!
+    end
+    it "succeeds if valid returns true by default" do
+      interactor.any_instance.stub(:valid?).and_return(true)
+      call!
+      expect(interactor_object.success?).to eq(true)
+    end
+    it "fails if valid returns false" do
+      interactor.any_instance.stub(:valid?).and_return(false)
+      expect { call! }.to raise_error(ValidatedInteractors::Failure)
+    end
+  end
+
   describe ".call" do
     let(:interactor_object) { interactor.new }
     subject(:call) { interactor_object.call }
