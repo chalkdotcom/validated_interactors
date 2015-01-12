@@ -50,7 +50,7 @@ module ValidatedInteractors
         errors[key] = value
       end
 
-      raise ValidatedInteractors::Failure, self
+      raise ValidatedInteractors::Failure.new(self.errors)
     end
   end
 end
